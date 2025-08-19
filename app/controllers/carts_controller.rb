@@ -1,3 +1,89 @@
 class CartsController < ApplicationController
-  ## TODO Escreva a lógica dos carrinhos aqui
+  # POST /cart
+  def create
+    cart = current_cart
+    add_product_to_cart(cart, params[:product_id], params[:quantity])
+    render json: cart_payload(cart), status: :ok
+  end
+
+  # GET /cart
+  def show
+    cart = current_cart
+    render json: cart_payload(cart), status: :ok
+  end
+
+  # POST /cart/add_item
+  def add_item
+    cart = current_cart
+    add_product_to_cart(cart, params[:product_id], params[:quantity])
+    render json: cart_payload(cart), status: :ok
+  end
+
+  # DELETE /cart/:product_id
+  def remove_item
+    product = Product.find_by(id: params[:product_id])
+
+    unless product
+      return render json: { error: "Produto não encontrado" }, status: :not_found
+    end
+
+    cart = current_cart
+    cart_item = cart.cart_items.find_by(product_id: product.id)
+
+    unless cart_item
+      return render json: { error: "Produto não está no carrinho" }, status: :unprocessable_entity
+    end
+
+    cart_item.destroy
+    if cart.cart_items.empty?
+      cart.destroy
+      session[:cart_id] = nil
+      render json: { message: "Carrinho vazio. Removido" }, status: :ok
+    else
+      render json: cart_payload(cart), status: :ok
+    end
+  end
+
+  private
+
+  def current_cart
+    if session[:cart_id]
+      Cart.find_by(id: session[:cart_id]) || create_cart
+    else
+      create_cart
+    end
+  end
+
+  def create_cart
+    cart = Cart.create!
+    session[:cart_id] = cart.id
+
+    cart
+  end
+
+  def add_product_to_cart(cart, product_id, quantity)
+    product = Product.find(product_id)
+    item = cart.cart_items.find_or_initialize_by(product: product)
+    item.quantity ||= 0
+    item.quantity += quantity.to_i
+    item.unit_price = product.price
+    item.save!
+    item
+  end
+
+  def cart_payload(cart)
+    {
+      id: cart.id,
+      products: cart.cart_items.map do |item|
+        {
+          id: item.product.id,
+          name: item.product.name,
+          quantity: item.quantity,
+          unit_price: item.unit_price.to_f,
+          total_price: item.total_price.to_f
+        }
+      end,
+      total_price: cart.total_price.to_f
+    }
+  end
 end
