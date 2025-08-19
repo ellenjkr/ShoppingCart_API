@@ -8,6 +8,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 
 gem 'redis', '~> 5.2'
+gem 'redis-session-store'
 gem 'sidekiq', '~> 7.2', '>= 7.2.4'
 gem 'sidekiq-scheduler', '~> 5.0', '>= 5.0.3'
 
@@ -16,6 +17,7 @@ gem 'guard-livereload', require: false
 
 
 group :development, :test do
+  gem "byebug"
   gem "debug", platforms: %i[ mri windows ]
   gem 'rspec-rails', '~> 6.1.0'
 end

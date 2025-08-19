@@ -10,6 +10,17 @@ services:
             - '5432:5432'
         volumes:
             - postgres13:/var/lib/postgresql/data
+    sidekiq:
+        build: .
+        command: bundle exec sidekiq -C config/sidekiq.yml
+        volumes:
+            - .:/rails
+        depends_on:
+            - redis
+            - db
+        environment:
+            DATABASE_URL: postgresql://postgres:password@db:5432/myapp_development
+            REDIS_URL: redis://redis:6379/0
     redis:
         image: redis:7.0.15-alpine
         ports:
