@@ -15,14 +15,21 @@
 - byebug
 
 ### Como executar o projeto
-Torne o script de entrada executável:
+Tornar arquivos executáveis:
 ```bash
 chmod +x bin/docker-entrypoint
+chmod +x bin/rails
+chmod -R +x bin
 ```
 
 Para erguer os containers:
 ```bash
 docker compose up -d
+```
+
+Caso o servidor não suba devido a processos antigos do Rails, remova o `server.pid`:
+```bash
+docker compose run --rm web rm -f tmp/pids/server.pid
 ```
 
 Para acessar a API:  
@@ -32,12 +39,6 @@ Para rodar os testes:
 ```bash
 docker compose run --rm test
 ```
-
-Caso o servidor não suba devido a processos antigos do Rails, remova o `server.pid`:
-```bash
-docker compose run --rm web rm -f tmp/pids/server.pid
-```
-
 ---
 
 ## Observações:
