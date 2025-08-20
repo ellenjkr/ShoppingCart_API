@@ -15,15 +15,6 @@
 - byebug
 
 ### Como executar o projeto
-Para utilizar o docker, é necessário rodar os comandos abaixo, que atualizam as permissões de acesso aos arquivos necessários:
-```bash
-chmod +x bin/*
-docker compose -f docker-compose.yml build --no-cache
-sudo chown -R $USER:$USER tmp log db db/schema.rb db/migrate
-chmod 664 db/schema.rb
-chmod -R 777 db log tmp
-```
-
 Para erguer os containers:
 ```bash
 docker compose up -d
@@ -42,6 +33,23 @@ Para rodar os testes:
 docker compose run --rm test
 ```
 ---
+### Soluções de Problemas
+Podem ocorrer conflitos com a permissão dos arquivos. Esses conflitos podem ser corrigidos com os comandos abaixo:
+```bash
+chmod +x bin/*
+docker compose -f docker-compose.yml build --no-cache
+sudo chown -R $USER:$USER tmp log db db/schema.rb db/migrate
+chmod 664 db/schema.rb
+chmod -R 777 db log tmp
+```
+
+Caso ocorram erros com o CRLF/LF, devido a conversões do Git, é possível resolver aplicando uma dessas configurações:
+[a link]((https://stackoverflow.com/questions/1967370/git-replacing-lf-with-crlf)
+```bash
+git config --system core.autocrlf false            # per-system solution
+git config --global core.autocrlf false            # per-user solution
+git config --local core.autocrlf false              # per-project solution
+```
 
 ## Observações:
 O teste 'describe "POST /add_items"' no arquivo spec/requests/carts_spec.rb foi modificado:
@@ -55,5 +63,6 @@ O teste 'describe "POST /add_items"' no arquivo spec/requests/carts_spec.rb foi 
   ```
 
 ---
+
 
 
