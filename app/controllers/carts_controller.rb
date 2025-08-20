@@ -21,25 +21,20 @@ class CartsController < ApplicationController
 
   # DELETE /cart/:product_id
   def remove_item
+    cart = current_cart
     product = Product.find_by(id: params[:product_id])
 
-    unless product
-      return render json: { error: "Produto não encontrado" }, status: :not_found
-    end
+    return render json: { error: "Produto não encontrado" }, status: :not_found unless product
 
-    cart = current_cart
     cart_item = cart.cart_items.find_by(product_id: product.id)
-
-    unless cart_item
-      return render json: { error: "Produto não está no carrinho" }, status: :unprocessable_entity
-    end
+    return render json: { error: "Produto não está no carrinho" }, status: :unprocessable_entity unless cart_item
 
     cart_item.destroy
     cart.update!(last_interaction_at: Time.current) # atualiza interação do usuário
 
     if cart.cart_items.empty?
       cart.destroy
-      session[:cart_id] = nil
+      session.delete(:cart_id)
       render json: { message: "Carrinho vazio. Removido" }, status: :ok
     else
       render json: cart_payload(cart), status: :ok
