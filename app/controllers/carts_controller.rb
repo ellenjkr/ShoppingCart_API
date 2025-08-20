@@ -35,6 +35,8 @@ class CartsController < ApplicationController
     end
 
     cart_item.destroy
+    cart.update!(last_interaction_at: Time.current) # atualiza interação do usuário
+
     if cart.cart_items.empty?
       cart.destroy
       session[:cart_id] = nil
@@ -68,6 +70,9 @@ class CartsController < ApplicationController
     item.quantity += quantity.to_i
     item.unit_price = product.price
     item.save!
+
+    cart.update!(last_interaction_at: Time.current)
+
     item
   end
 
