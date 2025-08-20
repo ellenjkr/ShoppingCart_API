@@ -1,4 +1,4 @@
-Projeto Rails - Carrinho de Compras
+# Projeto Rails - Carrinho de Compras
 
 ## Informações técnicas
 
