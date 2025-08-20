@@ -17,16 +17,10 @@
 ### Como executar o projeto
 Para utilizar o docker, é necessário rodar os comandos abaixo, que atualizam as permissões de acesso aos arquivos necessários:
 ```bash
-chmod +x bin/docker-entrypoint
-chmod +x bin/rails
-chmod -R +x bin
+chmod +x bin/*
 docker compose -f docker-compose.yml build --no-cache
-sudo chown -R $USER:$USER tmp log
-chmod -R 777 tmp log
-sudo chown -R $USER:$USER db/schema.rb db/migrate
+sudo chown -R $USER:$USER tmp log db db/schema.rb db/migrate
 chmod 664 db/schema.rb
-sudo chown -R $USER:$USER db/schema.rb db/migrate
-sudo chown -R $USER:$USER db log tmp
 chmod -R 777 db log tmp
 ```
 
@@ -61,4 +55,5 @@ O teste 'describe "POST /add_items"' no arquivo spec/requests/carts_spec.rb foi 
   ```
 
 ---
+
 
