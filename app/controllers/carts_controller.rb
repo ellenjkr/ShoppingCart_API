@@ -1,7 +1,7 @@
 class CartsController < ApplicationController
   # POST /cart
   def create
-    cart = current_cart
+    cart = create_cart
     add_product_to_cart(cart, params[:product_id], params[:quantity])
     render json: cart_payload(cart), status: :ok
   end
@@ -15,8 +15,11 @@ class CartsController < ApplicationController
   # POST /cart/add_item
   def add_item
     cart = current_cart
-    add_product_to_cart(cart, params[:product_id], params[:quantity])
-    render json: cart_payload(cart), status: :ok
+    if add_product_to_cart(cart, params[:product_id], params[:quantity]).present?
+      render json: cart_payload(cart), status: :ok
+    else
+      return render json: { error: "Produto não encontrado" }, status: :unprocessable_entity
+    end
   end
 
   # DELETE /cart/:product_id
@@ -45,9 +48,7 @@ class CartsController < ApplicationController
 
   def current_cart
     if session[:cart_id]
-      Cart.find_by(id: session[:cart_id]) || create_cart
-    else
-      create_cart
+      Cart.find_by(id: session[:cart_id])
     end
   end
 
@@ -59,7 +60,10 @@ class CartsController < ApplicationController
   end
 
   def add_product_to_cart(cart, product_id, quantity)
-    product = Product.find(product_id)
+    product = Product.find_by(id: product_id)
+
+    return nil unless product
+
     item = cart.cart_items.find_or_initialize_by(product: product)
     item.quantity ||= 0
     item.quantity += quantity.to_i
