@@ -9,11 +9,11 @@ class Cart < ApplicationRecord
   end
 
   def inactive_for_3_hours?
-    last_interaction_at.nil? || last_interaction_at < 1.minutes.ago
+    last_interaction_at.nil? ||  last_interaction_at.present? && last_interaction_at < 1.minutes.ago
   end
 
   def abandoned_for_7_days?
-    abandoned? && last_interaction_at < 2.minutes.ago
+    abandoned? && last_interaction_at.present? && last_interaction_at < 2.minutes.ago
   end
 
   def mark_as_abandoned
