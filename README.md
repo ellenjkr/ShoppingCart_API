@@ -44,7 +44,7 @@ chmod -R 777 db log tmp
 ```
 
 Caso ocorram erros com o CRLF/LF, devido a conversões do Git, é possível resolver aplicando uma dessas configurações:
-[a link]((https://stackoverflow.com/questions/1967370/git-replacing-lf-with-crlf)
+[a link]https://stackoverflow.com/questions/1967370/git-replacing-lf-with-crlf
 ```bash
 git config --system core.autocrlf false            # per-system solution
 git config --global core.autocrlf false            # per-user solution
@@ -63,6 +63,7 @@ O teste 'describe "POST /add_items"' no arquivo spec/requests/carts_spec.rb foi 
   ```
 
 ---
+
 
 
 
