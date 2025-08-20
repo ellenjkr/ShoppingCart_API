@@ -1,22 +1,14 @@
-# syntax = docker/dockerfile:1
-
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.3.1
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
 
-# Rails app lives here
 WORKDIR /rails
 
-# Set development environment
 ENV RAILS_ENV="development" \
     BUNDLE_DEPLOYMENT="0" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
 
-# ---------------------------
-# Build stage (instala gems)
-# ---------------------------
 FROM base as build
 
 RUN apt-get update -qq && \
@@ -32,9 +24,6 @@ COPY . .
 RUN bundle exec bootsnap precompile app/ lib/
 
 
-# ---------------------------
-# Final stage (runtime)
-# ---------------------------
 FROM base
 
 RUN apt-get update -qq && \
@@ -48,7 +37,7 @@ COPY --from=build /rails /rails
 # Cria usuário não-root
 RUN useradd rails --create-home --shell /bin/bash
 
-# ✅ Garante que pastas/arquivos críticos existam e tenham permissão
+# Garante que pastas/arquivos críticos existam e tenham permissão
 RUN mkdir -p db log tmp storage && \
     touch db/schema.rb log/development.log tmp/local_secret.txt && \
     chown -R rails:rails /rails && \
@@ -62,3 +51,4 @@ ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 EXPOSE 3000
 CMD ["./bin/rails", "server"]
+
