@@ -12,7 +12,7 @@ services:
             - postgres13:/var/lib/postgresql/data
     sidekiq:
         build: .
-        command: bundle exec sidekiq -C config/sidekiq.yml
+        command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
         volumes:
             - .:/rails
         depends_on:
@@ -29,7 +29,7 @@ services:
         - redis_data:/data  
     web:
         build: .
-        command: ./bin/rails server -b 0.0.0.0 -p 3000
+        command: ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
         volumes:
             - .:/rails
         ports:
@@ -42,7 +42,7 @@ services:
             REDIS_URL: redis://redis:6379/0
     test:
         build: .
-        command:  sh -c "bundle exec rails db:create db:migrate && bundle exec rspec"
+        command: ["sh", "-c", "bundle exec rails db:create db:migrate && bundle exec rspec"]
         volumes:
             - .:/rails
         depends_on:

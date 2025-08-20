@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker compose up --build)",
+      "Bash(sudo service docker start)",
+      "Bash(docker --version)",
+      "Bash(systemctl --user status docker)",
+      "Bash(dockerd --version)",
+      "Bash(docker info)",
+      "Bash(docker compose logs web)",
+      "Bash(docker run --rm shoppingcart_api-web:latest echo \"test\")",
+      "Bash(dos2unix bin/docker-entrypoint)",
+      "Bash(sed -i 's/\\r$//' bin/docker-entrypoint)",
+      "Bash(find bin/ -type f -exec sed -i 's/\\r$//' {} ;)",
+      "Bash(docker compose up --build -d)",
+      "Bash(docker compose ps)"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "acceptEdits",
+    "additionalDirectories": [
+      "/var/run"
+    ]
+  }
+}
